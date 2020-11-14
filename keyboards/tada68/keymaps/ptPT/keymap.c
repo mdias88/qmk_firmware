@@ -35,7 +35,7 @@
 //é
 #define KC_LOWER_EAGUDO SS_LALT(SS_TAP(X_KP_1)SS_TAP(X_KP_3)SS_TAP(X_KP_0))
 //É
-#define KC_UPPER_EAGUDO SS_LALT(SS_TAP(X_KP_0)SS_TAP(X_KP_1)SS_TAP(X_KP_3)SS_TAP(X_KP_8))
+#define KC_UPPER_EAGUDO SS_LALT(SS_TAP(X_KP_0)SS_TAP(X_KP_2)SS_TAP(X_KP_0)SS_TAP(X_KP_1))
 //ê
 #define KC_LOWER_ECIRCU SS_LALT(SS_TAP(X_KP_1)SS_TAP(X_KP_3)SS_TAP(X_KP_6))
 //Ê
@@ -147,20 +147,25 @@ static int sc_i_aux = 0;
 static int sc_o_aux = 0;
 static int sc_u_aux = 0;
 
-void sendUpperCaseString(char * str){
-	// Gotta temporarily disable both shift keys, else this whole thing may behave oddly
+void sendSpecialChar(char * str){
+	//# Disable both shift keys
 	unregister_code(KC_LSFT); 
 	unregister_code(KC_RSFT);
-	send_keyboard_report();
 	
 	send_string(str);
 	
-	// Restore shift keys to previous state
+	//# Restore shift keys to previous state
 	if(isLeftShiftPressed) register_code(KC_LSFT);
 	if(isRightShiftPressed) register_code(KC_RSFT);
 
-	send_keyboard_report();
-}	
+}
+
+void led_set_keymap(uint8_t usb_led) {
+  if (!(usb_led & (1<<USB_LED_NUM_LOCK))) {
+    register_code(KC_NLCK);
+    unregister_code(KC_NLCK);
+  }
+}
 
 uint32_t layer_state_set_user(uint32_t state) {
     switch (biton32(state)) {
@@ -189,9 +194,7 @@ uint32_t layer_state_set_user(uint32_t state) {
 
 void deleteChar(void){
 	register_code(KC_BSPC);
-	send_keyboard_report();
 	unregister_code(KC_BSPC);
-	send_keyboard_report();
 }	
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -220,14 +223,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	//UTILS	
     case M_EMAIL:
       if (record->event.pressed) {
-        SEND_STRING("manuel.barroso.dias@accenture.com");
+        send_string("manuel@genesis.studio");
       } else {
         // Do something else when release
       }
       return false; // Skip all further processing of this key
 	case M_EMAIL2:
       if (record->event.pressed) {
-        SEND_STRING("manueldias1988@gmail.com");
+        send_string("manueldias1988@gmail.com");
       } else {
         // Do something else when release
       }
@@ -250,9 +253,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 	case KC_CCEDI:
       if (record->event.pressed) {
 		  if(isLeftShiftPressed || isRightShiftPressed){		  
-			sendUpperCaseString(KC_UPPER_CCEDIL);
+			sendSpecialChar(KC_UPPER_CCEDIL);
 		  }else{
-			send_string(KC_LOWER_CCEDIL);  
+			sendSpecialChar(KC_LOWER_CCEDIL);  
 		  }	
       } else {
         // Do something else when release
@@ -272,37 +275,37 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		  switch(sc_a_aux){
 			  case 0:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_ATILDE);
+					sendSpecialChar(KC_UPPER_ATILDE);
 				  }else{
-					send_string(KC_LOWER_ATILDE);  
+					sendSpecialChar(KC_LOWER_ATILDE);  
 				  }
 				  return false;
 			  case 1:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_AAGUDO);
+					sendSpecialChar(KC_UPPER_AAGUDO);
 				  }else{
-					send_string(KC_LOWER_AAGUDO);  
+					sendSpecialChar(KC_LOWER_AAGUDO);  
 				  }
 				  return false;  
 			  case 2:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_AGRAVE);
+					sendSpecialChar(KC_UPPER_AGRAVE);
 				  }else{
-					send_string(KC_LOWER_AGRAVE);  
+					sendSpecialChar(KC_LOWER_AGRAVE);  
 				  }
 				  return false;
 			  case 3:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_ACIRCU);
+					sendSpecialChar(KC_UPPER_ACIRCU);
 				  }else{
-					send_string(KC_LOWER_ACIRCU);  
+					sendSpecialChar(KC_LOWER_ACIRCU);  
 				  }
 				  return false;
 			  case 4:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_ATILDE);
+					sendSpecialChar(KC_UPPER_ATILDE);
 				  }else{
-					send_string(KC_LOWER_ATILDE);  
+					sendSpecialChar(KC_LOWER_ATILDE);  
 				  }
 				  return false;
 		  }
@@ -325,23 +328,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		  switch(sc_e_aux){
 			   case 0:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_EAGUDO);
+					sendSpecialChar(KC_UPPER_EAGUDO);
 				  }else{
-					send_string(KC_LOWER_EAGUDO);  
+					sendSpecialChar(KC_LOWER_EAGUDO);  
 				  }
 				  return false;
 			   case 1:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_ECIRCU);
+					sendSpecialChar(KC_UPPER_ECIRCU);
 				  }else{
-					send_string(KC_LOWER_ECIRCU);  
+					sendSpecialChar(KC_LOWER_ECIRCU);  
 				  }
 				  return false;  
 			   case 2:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_EAGUDO);
+					sendSpecialChar(KC_UPPER_EAGUDO);
 				  }else{
-					send_string(KC_LOWER_EAGUDO);  
+					sendSpecialChar(KC_LOWER_EAGUDO);  
 				  }
 				  return false;  
 		  }
@@ -364,16 +367,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		  switch(sc_i_aux){
 			   case 0:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_IAGUDO);
+					sendSpecialChar(KC_UPPER_IAGUDO);
 				  }else{
-					send_string(KC_LOWER_IAGUDO);  
+					sendSpecialChar(KC_LOWER_IAGUDO);  
 				  }
 				  return false;
 			   case 1:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_IAGUDO);
+					sendSpecialChar(KC_UPPER_IAGUDO);
 				  }else{
-					send_string(KC_LOWER_IAGUDO);  
+					sendSpecialChar(KC_LOWER_IAGUDO);  
 				  }
 				  return false;  
 		  }
@@ -396,30 +399,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		  switch(sc_o_aux){
 			   case 0:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_OTILDE);
+					sendSpecialChar(KC_UPPER_OTILDE);
 				  }else{
-					send_string(KC_LOWER_OTILDE);  
+					sendSpecialChar(KC_LOWER_OTILDE);  
 				  }
 				  return false;  
 			   case 1:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_OAGUDO);
+					sendSpecialChar(KC_UPPER_OAGUDO);
 				  }else{
-					send_string(KC_LOWER_OAGUDO);  
+					sendSpecialChar(KC_LOWER_OAGUDO);  
 				  }
 				  return false;
 			   case 2:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_OCIRCU);
+					sendSpecialChar(KC_UPPER_OCIRCU);
 				  }else{
-					send_string(KC_LOWER_OCIRCU);  
+					sendSpecialChar(KC_LOWER_OCIRCU);  
 				  }
 				  return false;  
 			   case 3:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_OTILDE);
+					sendSpecialChar(KC_UPPER_OTILDE);
 				  }else{
-					send_string(KC_LOWER_OTILDE);  
+					sendSpecialChar(KC_LOWER_OTILDE);  
 				  }
 				  return false;  
 		  }
@@ -442,16 +445,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 		  switch(sc_u_aux){
 			   case 0:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_UAGUDO);
+					sendSpecialChar(KC_UPPER_UAGUDO);
 				  }else{
-					send_string(KC_LOWER_UAGUDO);  
+					sendSpecialChar(KC_LOWER_UAGUDO);  
 				  }
 				  return false;
 			   case 1:
 				  if(isLeftShiftPressed || isRightShiftPressed){		  
-					sendUpperCaseString(KC_UPPER_UAGUDO);
+					sendSpecialChar(KC_UPPER_UAGUDO);
 				  }else{
-					send_string(KC_LOWER_UAGUDO);  
+					sendSpecialChar(KC_LOWER_UAGUDO);  
 				  }
 				  return false;  
 		  }
